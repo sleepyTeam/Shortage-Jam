@@ -47,22 +47,27 @@ public class GroundCheck : MonoBehaviour
     }
     private void GCheck()
     {
-        bool hit = Physics.Raycast(bc.bounds.center, Vector3.down, raycastLength, ground);
+        bool hit = Physics.Raycast(bc.bounds.center, Vector3.down, raycastLength);
         Debug.DrawRay(bc.bounds.center, Vector3.down, Color.red);
         if (!hit)
         {
             grounded = false;
             rb.isKinematic = false;
         }
-    }
-    private void OnCollisionEnter(Collision other)
-    {
-        if (other.gameObject.layer == ground)
+        else
         {
-            grounded = true;
+            grounded= true;
             rb.isKinematic = true;
         }
     }
+    //private void OnCollisionEnter(Collision other)
+    //{
+    //    if (other.gameObject.layer == ground)
+    //    {
+    //        grounded = true;
+    //        rb.isKinematic = true;
+    //    }
+    //}
     private void BCheck()
     {
         
