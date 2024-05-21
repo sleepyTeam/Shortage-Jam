@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class LevelManager : MonoBehaviour
 {
 
-    private int levelIndex = 0;
+    private int levelIndex;
     public GameObject spawnPoint;
     public GameObject endPoint;
     public GameObject player;
@@ -17,11 +17,13 @@ public class LevelManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        levelIndex = SceneManager.GetActiveScene().buildIndex;
         spawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint");
         endPoint = GameObject.FindGameObjectWithTag("EndPoint");
     }
     private void Start()
     {
+        Debug.LogError(levelIndex);
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
@@ -29,6 +31,7 @@ public class LevelManager : MonoBehaviour
     void Update()
     {
         Respawn();
+        NextLevel();
         player = GameObject.FindGameObjectWithTag("Player");
     }
     void Respawn()
@@ -50,7 +53,8 @@ public class LevelManager : MonoBehaviour
         if(player != null && player.transform.position.x == endPoint.transform.position.x && player.transform.position.z == endPoint.transform.position.z)
         {
             levelIndex++;
-            Debug.Log("Yo");
+            if(levelIndex > SceneManager.sceneCount) levelIndex = 0;
+            Debug.Log(levelIndex);
             SceneManager.LoadScene(levelIndex);
         }
     }
