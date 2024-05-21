@@ -12,7 +12,7 @@ public class LevelManager : MonoBehaviour
     private PlayerMovement pM;
     public GameObject playerPrefab;
     private float playerYOffset = .75f;
-    // Start is called before the first frame update
+
     void Awake()
     {
         spawnPoint = GameObject.FindGameObjectWithTag("SpawnPoint");
@@ -22,8 +22,6 @@ public class LevelManager : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
     }
-
-    // Update is called once per frame
     void Update()
     {
         Respawn();

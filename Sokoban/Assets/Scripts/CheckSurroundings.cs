@@ -28,26 +28,21 @@ public class CheckSurroundings : MonoBehaviour
     public GameObject backwardGO;
 
     public float raycastLength;
-    // Start is called before the first frame update
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         bc = GetComponent<BoxCollider>();
     }
-
-    // Update is called once per frame
     void Update()
     {
         SurroundingCheck();
     }
-
-
     private void SurroundingCheck()
     {
         
         #region Left
-        leftBlocked = Physics.Raycast(bc.bounds.center, Vector3.left, out leftHit, raycastLength, Obstacle);
+        leftBlocked = Physics.Raycast(bc.bounds.center, Vector3.left, out leftHit, raycastLength, Obstacle | ground);
         
         Debug.DrawRay(bc.bounds.center, Vector3.left, Color.green);
         if (leftHit.transform != null)
@@ -60,7 +55,7 @@ public class CheckSurroundings : MonoBehaviour
         }
         #endregion
         #region Right
-        rightBlocked = Physics.Raycast(bc.bounds.center, Vector3.right,out rightHit, raycastLength, Obstacle);
+        rightBlocked = Physics.Raycast(bc.bounds.center, Vector3.right,out rightHit, raycastLength, Obstacle | ground);
         if(rightHit.transform != null)
         {
             rightGO = rightHit.transform.gameObject;
@@ -69,7 +64,7 @@ public class CheckSurroundings : MonoBehaviour
         Debug.DrawRay(bc.bounds.center, Vector3.right, Color.cyan);
         #endregion Right
         #region Fwd
-        forwardBlocked = Physics.Raycast(bc.bounds.center, Vector3.forward,out forwardHit, raycastLength, Obstacle);
+        forwardBlocked = Physics.Raycast(bc.bounds.center, Vector3.forward,out forwardHit, raycastLength, Obstacle | ground);
         if(forwardHit.transform != null)
         {
             forwardGO = forwardHit.transform.gameObject;
@@ -78,7 +73,7 @@ public class CheckSurroundings : MonoBehaviour
         Debug.DrawRay(bc.bounds.center, Vector3.forward, Color.blue);
         #endregion Fwd
         #region Bckwd
-        backwardBlocked = Physics.Raycast(bc.bounds.center, Vector3.back,out backwardHit, raycastLength, Obstacle);
+        backwardBlocked = Physics.Raycast(bc.bounds.center, Vector3.back,out backwardHit, raycastLength, Obstacle | ground);
         if(backwardHit.transform != null)
         {
             backwardGO = backwardHit.transform.gameObject;
