@@ -59,11 +59,11 @@ public class PlayerMovement : MonoBehaviour
                 {
                     if (blockCS.leftBlocked)
                     {
-                        Debug.Log("Path Blocked");
+                        //Play Blocked Sound;
                     }
                     else
                     {
-                        Debug.Log("Up");
+                       
                         prevPos = transform.position;
                         playerPos.x -= travelDistance;
                         transform.position = playerPos;
@@ -72,13 +72,12 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else if (playerCheck.leftGO.layer == ground)
                 {
-                    Debug.Log("PathBlocked");
+                    //Play Blocked Sound;
                 }
 
             }
             else
             {
-                Debug.Log("Up");
                 prevPos = transform.position;
                 playerPos.x -= travelDistance;
                 transform.position = playerPos;
@@ -94,11 +93,10 @@ public class PlayerMovement : MonoBehaviour
                 {
                     if (blockCS.rightBlocked)
                     {
-                        Debug.Log("Path Blocked");
+                        //Play Blocked Sound;
                     }
                     else
                     {
-                        Debug.Log("Down");
                         prevPos = transform.position;
                         playerPos.x += travelDistance;
                         transform.position = playerPos;
@@ -107,7 +105,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else if (playerCheck.rightGO.layer == ground)
                 {
-                    Debug.Log("Path Blocked");
+                    //Play Blocked Sound;
                 }      
             }
             else
@@ -129,11 +127,11 @@ public class PlayerMovement : MonoBehaviour
                 if(blockCS != null){
                     if (blockCS.forwardBlocked)
                     {
-                        Debug.Log("Path Blocked");
+                        //Play Block Sound
+
                     }
                     else
                     {
-                        Debug.Log("Forward");
                         prevPos = transform.position;
                         playerPos.z += travelDistance;
                         transform.position = playerPos;
@@ -142,14 +140,13 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else if(playerCheck.forwardGO.layer == ground)
                 {
-                    Debug.Log("Path Blocked");
+                                            //Play Block Sound
                 }
                        
 
             }
             else
             {
-                Debug.Log("Forward");
                 prevPos = transform.position;
                 playerPos.z += travelDistance;
                 transform.position = playerPos;
@@ -164,11 +161,10 @@ public class PlayerMovement : MonoBehaviour
                 {
                     if (blockCS.backwardBlocked)
                     {
-                        Debug.Log("Path Blocked");
+                        //Play Blocked Sound;
                     }
                     else
                     {
-                        Debug.Log("Backward");
                         prevPos = transform.position;
                         playerPos.z -= travelDistance;
                         transform.position = playerPos;
@@ -177,7 +173,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else if(playerCheck.backwardGO.layer == ground)
                 {
-                    Debug.Log("PathBlocked");
+                    //Play Blocked Sound;
                 }
             }
             else
@@ -217,7 +213,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void Reset()
     {
-        Debug.Log("reset Position");
         playerPos = spawnPos;
         transform.position = playerPos;
        
@@ -225,7 +220,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Push " + other.gameObject.name);
         Push(other.gameObject);
     }
 }
