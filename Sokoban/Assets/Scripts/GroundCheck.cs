@@ -47,7 +47,7 @@ public class GroundCheck : MonoBehaviour
     }
     private void GCheck()
     {
-        bool hit = Physics.Raycast(bc.bounds.center, Vector3.down, raycastLength);
+        bool hit = Physics.Raycast(bc.bounds.center, Vector3.down, raycastLength / 2);
         Debug.DrawRay(bc.bounds.center, Vector3.down, Color.red);
         if (!hit)
         {
