@@ -38,9 +38,14 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         VerticalMovement();
         HorizontalMovement();
-        Reset();
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            Reset();
+        }
+            
     }
 
     void VerticalMovement()
@@ -210,14 +215,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void Reset()
+    public void Reset()
     {
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            Debug.Log("reset Position");
-            playerPos = spawnPos;
-            transform.position = playerPos;
-        }
+        Debug.Log("reset Position");
+        playerPos = spawnPos;
+        transform.position = playerPos;
        
     }
 

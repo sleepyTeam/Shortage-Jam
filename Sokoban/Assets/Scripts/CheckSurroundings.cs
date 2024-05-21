@@ -73,12 +73,12 @@ public class CheckSurroundings : MonoBehaviour
         Debug.DrawRay(bc.bounds.center, Vector3.forward, Color.blue);
         #endregion Fwd
         #region Bckwd
-        backwardBlocked = Physics.Raycast(bc.bounds.center, Vector3.back,out backwardHit, raycastLength, Obstacle | ground);
-        if(backwardHit.transform != null)
+        backwardBlocked = Physics.Raycast(bc.bounds.center, Vector3.back,out backwardHit, raycastLength, Obstacle|ground);
+        if (backwardHit.transform != null)
         {
             backwardGO = backwardHit.transform.gameObject;
         }
-        else backwardGO=null;
+        else { backwardGO = null; }
         Debug.DrawRay(bc.bounds.center, Vector3.back, Color.black);
         #endregion Bckwd
 

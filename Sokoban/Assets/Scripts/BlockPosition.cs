@@ -6,13 +6,9 @@ public class BlockPosition : MonoBehaviour
 {
     public Vector3 startPos;
 
-    private void Start()
+    private void Awake()
     {
         startPos = transform.position;
     }
 
-    public void Reset()
-    {
-        
-    }
 }
