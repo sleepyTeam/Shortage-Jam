@@ -5,16 +5,16 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    int travelDistance = 1;
-    private BoxCollider collider;
+    float travelDistance = 1f;
+    private BoxCollider bc;
     private Rigidbody rb;
     public Vector3 playerPos;
     public Vector3 prevPos;
     public Vector3 playerOffset;
     public LevelManager lM;
     private Vector3 spawnPos;
-    public GroundCheck playerCheck;
-    public GroundCheck blockCheck;
+    public CheckSurroundings playerCheck;
+    public CheckSurroundings blockCS;
 
     public enum MoveVector
     {
@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     {
        
         lM = GameObject.FindGameObjectWithTag("LevelMan").GetComponent<LevelManager>();
-        collider = GetComponent<BoxCollider>();
+        bc = GetComponent<BoxCollider>();
         playerPos = transform.position;
         rb = GetComponent<Rigidbody>();
         spawnPos = lM.spawnPoint.transform.position + playerOffset;
@@ -47,8 +47,8 @@ public class PlayerMovement : MonoBehaviour
         {
             if (playerCheck.leftGO != null)
             {
-                blockCheck = playerCheck.leftGO.GetComponent<GroundCheck>();
-                if (blockCheck.leftBlocked)
+                blockCS = playerCheck.leftGO.GetComponent<CheckSurroundings>();
+                if (blockCS.leftBlocked)
                 {
                     Debug.Log("Path Blocked");
                 }
@@ -75,8 +75,8 @@ public class PlayerMovement : MonoBehaviour
         {
             if (playerCheck.rightGO != null)
             {
-                blockCheck = playerCheck.rightGO.GetComponent<GroundCheck>();
-                if (blockCheck.rightBlocked)
+                blockCS = playerCheck.rightGO.GetComponent<CheckSurroundings>();
+                if (blockCS.rightBlocked)
                 {
                     Debug.Log("Path Blocked");
                 }
@@ -105,8 +105,8 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))
             if (playerCheck.forwardGO != null)
             {
-                blockCheck = playerCheck.forwardGO.GetComponent<GroundCheck>();
-                if (blockCheck.forwardBlocked)
+                blockCS = playerCheck.forwardGO.GetComponent<CheckSurroundings>();
+                if (blockCS.forwardBlocked)
                 {
                     Debug.Log("Path Blocked");
                 }
@@ -132,8 +132,8 @@ public class PlayerMovement : MonoBehaviour
         {
             if (playerCheck.backwardGO != null)
             {
-                blockCheck = playerCheck.backwardGO.GetComponent<GroundCheck>();
-                if (blockCheck.backwardBlocked)
+                blockCS = playerCheck.backwardGO.GetComponent<CheckSurroundings>();
+                if (blockCS.backwardBlocked)
                 {
                     Debug.Log("Path Blocked");
                 }
@@ -157,28 +157,26 @@ public class PlayerMovement : MonoBehaviour
     }
     void Push(GameObject collision)
     {
-        blockCheck = collision.gameObject.GetComponent<GroundCheck>();
-
-
         Vector3 collisionPos = collision.transform.position;
-        if (direction == MoveVector.Left && blockCheck.leftBlocked == false)
+
+        if (direction == MoveVector.Left && blockCS.leftBlocked == false)
         {
-            collisionPos.x -= travelDistance;
+            collisionPos.x -= travelDistance/2;
             collision.transform.position = collisionPos;
         }
-        if (direction == MoveVector.Right && blockCheck.rightBlocked == false)
+        else if (direction == MoveVector.Right && blockCS.rightBlocked == false)
         {
-            collisionPos.x += travelDistance;
+            collisionPos.x += travelDistance / 2;
             collision.transform.position = collisionPos;
         }
-        if (direction == MoveVector.Forward && blockCheck.forwardBlocked == false)
+        else if (direction == MoveVector.Forward && blockCS.forwardBlocked == false)
         {
-            collisionPos.z += travelDistance;
+            collisionPos.z += travelDistance / 2;
             collision.transform.position = collisionPos;
         }
-        if (direction == MoveVector.Backward && blockCheck.backwardBlocked ==false)
+        else if (direction == MoveVector.Backward && blockCS.backwardBlocked ==false)
         {
-            collisionPos.z -= travelDistance;
+            collisionPos.z -= travelDistance / 2;
             collision.transform.position = collisionPos;
         }
     }
