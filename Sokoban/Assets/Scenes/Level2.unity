@@ -775,10 +775,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 758bee3feffaaca43a9f1d83ad1f8241, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDone: 0
   spawnPoint: {fileID: 0}
   endPoint: {fileID: 5616404613702279243}
   player: {fileID: 0}
   playerPrefab: {fileID: 8767132769642383936, guid: ae1a8aef6b02a124bb0badba8faed28b, type: 3}
+  BlockPrefab: {fileID: 0}
+  blockPositions: []
+  startPositions: []
 --- !u!4 &837869423
 Transform:
   m_ObjectHideFlags: 0

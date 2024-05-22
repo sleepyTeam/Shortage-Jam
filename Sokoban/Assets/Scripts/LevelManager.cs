@@ -17,6 +17,7 @@ public class LevelManager : MonoBehaviour
     public GameObject playerPrefab;
     public GameObject BlockPrefab;
     private float playerYOffset = .75f;
+    private float playerRot = 0;
     public List<BlockPosition> blockPositions = new List<BlockPosition>();
     public List<Vector3> startPositions = new List<Vector3>();
 
@@ -43,6 +44,10 @@ public class LevelManager : MonoBehaviour
         {
             ResetBlocks();
         }
+    }
+
+    private void FixedUpdate()
+    {
         NextLevel();
     }
 
@@ -92,7 +97,18 @@ public class LevelManager : MonoBehaviour
 
         if (spinning)
         {
-            player.transform.rotation = new Quaternion(0, Quaternion.identity.y + 5 * Time.deltaTime, 0, Quaternion.identity.w);
+            playerRot += .05f;
+            if (playerRot > 1)
+            {
+                Debug.Log("Bing");
+                playerRot = -1;
+            }
+            if (player.transform.localScale.x > 0)
+            {
+                player.transform.localScale = new Vector3(player.transform.localScale.x - .01f, player.transform.localScale.y - .01f, player.transform.localScale.z - .01f);
+            }
+            player.transform.rotation = new Quaternion(0, playerRot, 0, player.transform.rotation.w);
+            Debug.Log(playerRot);
         }
     }
 
@@ -103,6 +119,7 @@ public class LevelManager : MonoBehaviour
         yield return new WaitForSeconds(2);
 
         spinning = false;
+        Destroy(player);
 
         levelIndex++;
         if (levelIndex > SceneManager.sceneCount) levelIndex = 0;
