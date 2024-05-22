@@ -1,20 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    int travelDistance = 1;
-    private BoxCollider collider;
+    float travelDistance = 1f;
+    private BoxCollider bc;
     private Rigidbody rb;
     public Vector3 playerPos;
     public Vector3 prevPos;
     public Vector3 playerOffset;
     public LevelManager lM;
     private Vector3 spawnPos;
-    public GroundCheck playerCheck;
-    public GroundCheck blockCheck;
+    public LayerMask ground;
+    public CheckSurroundings playerCheck;
+    public CheckSurroundings blockCS;
 
     public enum MoveVector
     {
@@ -27,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
     {
        
         lM = GameObject.FindGameObjectWithTag("LevelMan").GetComponent<LevelManager>();
-        collider = GetComponent<BoxCollider>();
+        bc = GetComponent<BoxCollider>();
         playerPos = transform.position;
         rb = GetComponent<Rigidbody>();
         spawnPos = lM.spawnPoint.transform.position + playerOffset;
@@ -36,9 +38,14 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         VerticalMovement();
         HorizontalMovement();
-        Reset();
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            Reset();
+        }
+            
     }
 
     void VerticalMovement()
@@ -47,24 +54,30 @@ public class PlayerMovement : MonoBehaviour
         {
             if (playerCheck.leftGO != null)
             {
-                blockCheck = playerCheck.leftGO.GetComponent<GroundCheck>();
-                if (blockCheck.leftBlocked)
+                blockCS = playerCheck.leftGO.GetComponent<CheckSurroundings>();
+                if (blockCS != null)
                 {
-                    Debug.Log("Path Blocked");
+                    if (blockCS.leftBlocked)
+                    {
+                        //Play Blocked Sound;
+                    }
+                    else
+                    {
+                       
+                        prevPos = transform.position;
+                        playerPos.x -= travelDistance;
+                        transform.position = playerPos;
+                        direction = MoveVector.Left;
+                    }
                 }
-                else
+                else if (playerCheck.leftGO.layer == ground)
                 {
-                    Debug.Log("Up");
-                    prevPos = transform.position;
-                    playerPos.x -= travelDistance;
-                    transform.position = playerPos;
-                    direction = MoveVector.Left;
+                    //Play Blocked Sound;
                 }
 
             }
             else
             {
-                Debug.Log("Up");
                 prevPos = transform.position;
                 playerPos.x -= travelDistance;
                 transform.position = playerPos;
@@ -75,20 +88,25 @@ public class PlayerMovement : MonoBehaviour
         {
             if (playerCheck.rightGO != null)
             {
-                blockCheck = playerCheck.rightGO.GetComponent<GroundCheck>();
-                if (blockCheck.rightBlocked)
+                blockCS = playerCheck.rightGO.GetComponent<CheckSurroundings>();
+                if (blockCS != null)
                 {
-                    Debug.Log("Path Blocked");
+                    if (blockCS.rightBlocked)
+                    {
+                        //Play Blocked Sound;
+                    }
+                    else
+                    {
+                        prevPos = transform.position;
+                        playerPos.x += travelDistance;
+                        transform.position = playerPos;
+                        direction = MoveVector.Right;
+                    }
                 }
-                else
+                else if (playerCheck.rightGO.layer == ground)
                 {
-                    Debug.Log("Down");
-                    prevPos = transform.position;
-                    playerPos.x += travelDistance;
-                    transform.position = playerPos;
-                    direction = MoveVector.Right;
-                }
-
+                    //Play Blocked Sound;
+                }      
             }
             else
             {
@@ -105,24 +123,30 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))
             if (playerCheck.forwardGO != null)
             {
-                blockCheck = playerCheck.forwardGO.GetComponent<GroundCheck>();
-                if (blockCheck.forwardBlocked)
-                {
-                    Debug.Log("Path Blocked");
+                blockCS = playerCheck.forwardGO.GetComponent<CheckSurroundings>();
+                if(blockCS != null){
+                    if (blockCS.forwardBlocked)
+                    {
+                        //Play Block Sound
+
+                    }
+                    else
+                    {
+                        prevPos = transform.position;
+                        playerPos.z += travelDistance;
+                        transform.position = playerPos;
+                        direction = MoveVector.Forward;
+                    }
                 }
-                else
+                else if(playerCheck.forwardGO.layer == ground)
                 {
-                    Debug.Log("Forward");
-                    prevPos = transform.position;
-                    playerPos.z += travelDistance;
-                    transform.position = playerPos;
-                    direction = MoveVector.Forward;
+                                            //Play Block Sound
                 }
+                       
 
             }
             else
             {
-                Debug.Log("Forward");
                 prevPos = transform.position;
                 playerPos.z += travelDistance;
                 transform.position = playerPos;
@@ -132,18 +156,24 @@ public class PlayerMovement : MonoBehaviour
         {
             if (playerCheck.backwardGO != null)
             {
-                blockCheck = playerCheck.backwardGO.GetComponent<GroundCheck>();
-                if (blockCheck.backwardBlocked)
+                blockCS = playerCheck.backwardGO.GetComponent<CheckSurroundings>();
+                if(blockCS != null)
                 {
-                    Debug.Log("Path Blocked");
+                    if (blockCS.backwardBlocked)
+                    {
+                        //Play Blocked Sound;
+                    }
+                    else
+                    {
+                        prevPos = transform.position;
+                        playerPos.z -= travelDistance;
+                        transform.position = playerPos;
+                        direction = MoveVector.Backward;
+                    }
                 }
-                else
+                else if(playerCheck.backwardGO.layer == ground)
                 {
-                    Debug.Log("Backward");
-                    prevPos = transform.position;
-                    playerPos.z -= travelDistance;
-                    transform.position = playerPos;
-                    direction = MoveVector.Backward;
+                    //Play Blocked Sound;
                 }
             }
             else
@@ -157,46 +187,39 @@ public class PlayerMovement : MonoBehaviour
     }
     void Push(GameObject collision)
     {
-        blockCheck = collision.gameObject.GetComponent<GroundCheck>();
-
-
         Vector3 collisionPos = collision.transform.position;
-        if (direction == MoveVector.Left && blockCheck.leftBlocked == false)
+
+        if (direction == MoveVector.Left && blockCS.leftBlocked == false)
         {
-            collisionPos.x -= travelDistance;
+            collisionPos.x -= travelDistance/2;
             collision.transform.position = collisionPos;
         }
-        if (direction == MoveVector.Right && blockCheck.rightBlocked == false)
+        else if (direction == MoveVector.Right && blockCS.rightBlocked == false)
         {
-            collisionPos.x += travelDistance;
+            collisionPos.x += travelDistance / 2;
             collision.transform.position = collisionPos;
         }
-        if (direction == MoveVector.Forward && blockCheck.forwardBlocked == false)
+        else if (direction == MoveVector.Forward && blockCS.forwardBlocked == false)
         {
-            collisionPos.z += travelDistance;
+            collisionPos.z += travelDistance / 2;
             collision.transform.position = collisionPos;
         }
-        if (direction == MoveVector.Backward && blockCheck.backwardBlocked ==false)
+        else if (direction == MoveVector.Backward && blockCS.backwardBlocked ==false)
         {
-            collisionPos.z -= travelDistance;
+            collisionPos.z -= travelDistance / 2;
             collision.transform.position = collisionPos;
         }
     }
 
-    private void Reset()
+    public void Reset()
     {
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            Debug.Log("reset Position");
-            playerPos = spawnPos;
-            transform.position = playerPos;
-        }
+        playerPos = spawnPos;
+        transform.position = playerPos;
        
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Push " + other.gameObject.name);
         Push(other.gameObject);
     }
 }

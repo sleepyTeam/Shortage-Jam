@@ -13,8 +13,12 @@ public class LevelManager : MonoBehaviour
     public GameObject player;
     private PlayerMovement pM;
     public GameObject playerPrefab;
+    public GameObject BlockPrefab;
     private float playerYOffset = .75f;
-    // Start is called before the first frame update
+    public List<BlockPosition> blockPositions = new List<BlockPosition>();
+    public List<Vector3> startPositions = new List<Vector3>();
+    
+
     void Awake()
     {
         levelIndex = SceneManager.GetActiveScene().buildIndex;
@@ -25,37 +29,49 @@ public class LevelManager : MonoBehaviour
     {
         Debug.LogError(levelIndex);
         player = GameObject.FindGameObjectWithTag("Player");
-    }
+        foreach(BlockPosition block in blockPositions)
+        {
+            startPositions.Add(block.startPos);
+        }
 
-    // Update is called once per frame
+    }
     void Update()
     {
         Respawn();
-        NextLevel();
         player = GameObject.FindGameObjectWithTag("Player");
     }
     void Respawn()
     {
         if (player == null)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                Debug.Log("Spawning New Player");
-                
-                GameObject player = Instantiate(playerPrefab, new Vector3( spawnPoint.transform.position.x, spawnPoint.transform.position.y + playerYOffset, spawnPoint.transform.position.z), Quaternion.identity);
-
-            }
+            Debug.Log("Spawning New Player");
+            player = Instantiate(playerPrefab, new Vector3( spawnPoint.transform.position.x, spawnPoint.transform.position.y + playerYOffset, spawnPoint.transform.position.z), Quaternion.identity);
         }
-    }
-
-    void NextLevel()
-    {
-        if(player != null && player.transform.position.x == endPoint.transform.position.x && player.transform.position.z == endPoint.transform.position.z)
+        else
         {
-            levelIndex++;
-            if(levelIndex > SceneManager.sceneCount) levelIndex = 0;
-            Debug.Log(levelIndex);
-            SceneManager.LoadScene(levelIndex);
+            player.gameObject.GetComponent<PlayerMovement>().Reset();
         }
     }
+    void ResetBlocks()
+    {
+        for (int i = 0;  i < blockPositions.Count; i++)
+        {
+            BlockPosition block = blockPositions[i];
+            if (block != null)
+            {
+                if (block.gameObject == null)
+                {
+                    GameObject NB =Instantiate(BlockPrefab, block.startPos, Quaternion.identity);
+                }
+                else block.gameObject.transform.position = block.startPos;
+            }
+            else
+                {
+                    GameObject NB = Instantiate(BlockPrefab, startPositions[i], Quaternion.identity);
+                    blockPositions[i] = NB.GetComponent<BlockPosition>();
+                }              
+        }
+        Respawn();
+    }
+
 }
