@@ -9,9 +9,26 @@ public class GroundCheck : MonoBehaviour
     public LayerMask ground;
     public Rigidbody rb;
     public bool grounded;
-    public float raycastLength = 0.15f;
 
-    private void Start()
+    public bool leftBlocked;
+    public bool rightBlocked;
+    public bool forwardBlocked;
+    public bool backwardBlocked;
+
+    public RaycastHit leftHit;
+    public RaycastHit rightHit;
+    public RaycastHit forwardHit;
+    public RaycastHit backwardHit;
+
+    public GameObject leftGO;
+    public GameObject rightGO;
+    public GameObject forwardGO;
+    public GameObject backwardGO;
+
+    public float raycastLength;
+    // Start is called before the first frame update
+
+    void Start()
     {
         rb = GetComponent<Rigidbody>();
     }

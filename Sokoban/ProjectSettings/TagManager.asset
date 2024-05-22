@@ -7,6 +7,7 @@ TagManager:
   - Block
   - SpawnPoint
   - LevelMan
+  - EndPoint
   layers:
   - Default
   - TransparentFX
