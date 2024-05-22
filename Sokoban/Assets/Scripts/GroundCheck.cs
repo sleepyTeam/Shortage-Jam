@@ -9,7 +9,6 @@ public class GroundCheck : MonoBehaviour
     public LayerMask ground;
     public Rigidbody rb;
     public bool grounded;
-    public float raycastLength = 0.15f;
 
     public bool leftBlocked;
     public bool rightBlocked;

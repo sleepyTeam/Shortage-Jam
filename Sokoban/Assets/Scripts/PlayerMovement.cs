@@ -38,9 +38,10 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        VerticalMovement();
-        HorizontalMovement();
+        if(playerPos.y >= .75 && !lM.isDone) {
+            VerticalMovement();
+            HorizontalMovement();
+        }
         if(Input.GetKeyDown(KeyCode.R))
         {
             Reset();
