@@ -7,6 +7,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     float travelDistance = 1f;
+    float _cooldown = 0.2f;
     private BoxCollider bc;
     private Rigidbody rb;
     public Vector3 playerPos;
@@ -17,7 +18,10 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask ground;
     public CheckSurroundings playerCheck;
     public CheckSurroundings blockCS;
-
+    private AudioSource aS;
+    public AudioClip blockedSound;
+    public AudioClip pushSound;
+    public bool _canPush;
     public enum MoveVector
     {
         Left, Right, Forward, Backward
@@ -27,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       
+        aS = GetComponent<AudioSource>();
         lM = GameObject.FindGameObjectWithTag("LevelMan").GetComponent<LevelManager>();
         bc = GetComponent<BoxCollider>();
         playerPos = transform.position;
@@ -41,11 +45,12 @@ public class PlayerMovement : MonoBehaviour
 
         VerticalMovement();
         HorizontalMovement();
-        if(Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             Reset();
         }
-            
+        _canPush = canPush();
+
     }
 
     void VerticalMovement()
@@ -59,27 +64,33 @@ public class PlayerMovement : MonoBehaviour
                 {
                     if (blockCS.leftBlocked)
                     {
+                        aS.clip = blockedSound;
+                        aS.Play();
                         //Play Blocked Sound;
                     }
                     else
                     {
-                       
+
                         prevPos = transform.position;
                         playerPos.x -= travelDistance;
+                        playerPos.y = transform.position.y;
                         transform.position = playerPos;
                         direction = MoveVector.Left;
                     }
                 }
                 else if (playerCheck.leftGO.layer == ground)
                 {
-                    //Play Blocked Sound;
+                    aS.clip=blockedSound; aS.Play();
+                    aS.Play();//Play Blocked Sound;
                 }
 
             }
             else
             {
+
                 prevPos = transform.position;
                 playerPos.x -= travelDistance;
+                playerPos.y = transform.position.y;
                 transform.position = playerPos;
                 direction = MoveVector.Left;
             }
@@ -93,26 +104,32 @@ public class PlayerMovement : MonoBehaviour
                 {
                     if (blockCS.rightBlocked)
                     {
+                        aS.clip = blockedSound;
+                        aS.Play();
                         //Play Blocked Sound;
                     }
                     else
                     {
+
                         prevPos = transform.position;
                         playerPos.x += travelDistance;
+                        playerPos.y = transform.position.y;
                         transform.position = playerPos;
                         direction = MoveVector.Right;
                     }
                 }
                 else if (playerCheck.rightGO.layer == ground)
                 {
-                    //Play Blocked Sound;
+                    aS.clip = blockedSound;
+                    aS.Play();//Play Blocked Sound;
                 }      
             }
             else
             {
-                Debug.Log("Down");
+;
                 prevPos = transform.position;
                 playerPos.x += travelDistance;
+                playerPos.y = transform.position.y;
                 transform.position = playerPos;
                 direction = MoveVector.Right;
             }
@@ -127,20 +144,24 @@ public class PlayerMovement : MonoBehaviour
                 if(blockCS != null){
                     if (blockCS.forwardBlocked)
                     {
-                        //Play Block Sound
+                        aS.clip = blockedSound;
+                        aS.Play();//Play Block Sound
 
                     }
                     else
                     {
+
                         prevPos = transform.position;
                         playerPos.z += travelDistance;
+                        playerPos.y = transform.position.y;
                         transform.position = playerPos;
                         direction = MoveVector.Forward;
                     }
                 }
                 else if(playerCheck.forwardGO.layer == ground)
                 {
-                                            //Play Block Sound
+                    aS.clip = blockedSound;
+                    aS.Play();               //Play Block Sound
                 }
                        
 
@@ -149,6 +170,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 prevPos = transform.position;
                 playerPos.z += travelDistance;
+                playerPos.y = transform.position.y;
                 transform.position = playerPos;
                 direction = MoveVector.Forward;
             }
@@ -161,25 +183,31 @@ public class PlayerMovement : MonoBehaviour
                 {
                     if (blockCS.backwardBlocked)
                     {
-                        //Play Blocked Sound;
+                        aS.clip = blockedSound;
+                        aS.Play(); //Play Blocked Sound;
                     }
                     else
                     {
+   
                         prevPos = transform.position;
                         playerPos.z -= travelDistance;
+                        playerPos.y = transform.position.y;
                         transform.position = playerPos;
                         direction = MoveVector.Backward;
                     }
                 }
                 else if(playerCheck.backwardGO.layer == ground)
                 {
-                    //Play Blocked Sound;
+                    aS.clip = blockedSound;
+                    aS.Play(); //Play Blocked Sound;
                 }
             }
             else
             {
+                
                 prevPos = transform.position;
                 playerPos.z -= travelDistance;
+                playerPos.y = transform.position.y;
                 transform.position = playerPos;
                 direction = MoveVector.Backward;
             }
@@ -187,39 +215,66 @@ public class PlayerMovement : MonoBehaviour
     }
     void Push(GameObject collision)
     {
-        Vector3 collisionPos = collision.transform.position;
+        VerticalCheck cVC = collision.GetComponent<VerticalCheck>();
+        if (_canPush)
+        {
+            Debug.Log("Push: " + collision);
+            
+            Vector3 collisionPos = collision.transform.position;
+            aS.clip = pushSound;
 
-        if (direction == MoveVector.Left && blockCS.leftBlocked == false)
-        {
-            collisionPos.x -= travelDistance/2;
-            collision.transform.position = collisionPos;
+            if (direction == MoveVector.Left && blockCS.leftBlocked == false)
+            {
+                collisionPos.x -= travelDistance;
+                collision.transform.position = collisionPos;
+            }
+            if (direction == MoveVector.Right && blockCS.rightBlocked == false)
+            {
+                collisionPos.x += travelDistance;
+                collision.transform.position = collisionPos;
+            }
+            if (direction == MoveVector.Forward && blockCS.forwardBlocked == false)
+            {
+                collisionPos.z += travelDistance;
+                collision.transform.position = collisionPos;
+            }
+            if (direction == MoveVector.Backward && blockCS.backwardBlocked == false)
+            {
+                collisionPos.z -= travelDistance;
+                collision.transform.position = collisionPos;
+            }
+            if (cVC != null && cVC._connectedAbove)
+            {
+                Push(cVC.blockAbove);
+            }
+            aS.Play();
         }
-        else if (direction == MoveVector.Right && blockCS.rightBlocked == false)
-        {
-            collisionPos.x += travelDistance / 2;
-            collision.transform.position = collisionPos;
-        }
-        else if (direction == MoveVector.Forward && blockCS.forwardBlocked == false)
-        {
-            collisionPos.z += travelDistance / 2;
-            collision.transform.position = collisionPos;
-        }
-        else if (direction == MoveVector.Backward && blockCS.backwardBlocked ==false)
-        {
-            collisionPos.z -= travelDistance / 2;
-            collision.transform.position = collisionPos;
-        }
+        StartCoroutine(Cooldown());
     }
+    bool canPush()
+    {
+        if (gameObject.GetComponent<GroundCheck>().isFalling)
+        {
+            return false;
+        }
+        else { return true; }
 
+    }
     public void Reset()
     {
         playerPos = spawnPos;
         transform.position = playerPos;
        
     }
-
+    private IEnumerator Cooldown()
+    { 
+        _canPush = false;
+        yield return new WaitForSeconds(_cooldown);
+        _canPush = true;
+    }
     private void OnTriggerEnter(Collider other)
     {
         Push(other.gameObject);
+        
     }
 }

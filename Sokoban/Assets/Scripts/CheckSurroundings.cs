@@ -12,6 +12,7 @@ public class CheckSurroundings : MonoBehaviour
     public LayerMask ground;
     public LayerMask Obstacle;
 
+    public bool isFalling;
     public bool leftBlocked;
     public bool rightBlocked;
     public bool forwardBlocked;

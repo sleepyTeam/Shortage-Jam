@@ -7,13 +7,14 @@ public class GroundCheck : MonoBehaviour
     public GameObject groundCheckHolder;
     public BoxCollider groundCheckCollider;
     public LayerMask ground;
+    public bool isFalling;
     public Rigidbody rb;
     public bool grounded;
     public float raycastLength = 0.15f;
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
+
     }
     private void Update()
     {
@@ -31,8 +32,10 @@ public class GroundCheck : MonoBehaviour
         Debug.DrawRay(groundCheckCollider.bounds.center, Vector3.down, Color.red);
         if (!hit)
         {
+            isFalling = true;
             grounded = false;
             rb.isKinematic = false;
         }
+        else isFalling = false;
     }
 }
