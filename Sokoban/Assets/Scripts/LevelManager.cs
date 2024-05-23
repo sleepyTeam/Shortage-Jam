@@ -71,5 +71,8 @@ public class LevelManager : MonoBehaviour
         }
         Respawn();
     }
-
+    void NextLevel()
+    {
+        
+    }
 }
